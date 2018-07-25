@@ -114,9 +114,12 @@ typedef NS_ENUM(NSInteger, IGListDiffingSectionState) {
     if (oldObject == nil) {
         self.viewModels = [[self.dataSource sectionController:self viewModelsForObject:object] copy];
     } else {
-        IGAssert([oldObject isEqualToDiffableObject:object],
-                 @"Unequal objects %@ and %@ will cause IGListBindingSectionController to reload the entire section",
-                 oldObject, object);
+#if IGLK_LOGGING_ENABLED
+        if (![oldObject isEqualToDiffableObject:object]) {
+            IGLKLog(@"Warning: Unequal objects %@ and %@ will cause IGListBindingSectionController to reload the entire section",
+                    oldObject, object);
+        }
+#endif
         [self updateAnimated:YES completion:nil];
     }
 }
